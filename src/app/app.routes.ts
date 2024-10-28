@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterLink, RouterOutlet, Routes } from '@angular/route
 const PARENT_ID = new InjectionToken<Signal<string>>('parentId');
 
 @Component({
+    selector: 'parent',
     template: '<router-outlet />',
     imports: [RouterOutlet],
     standalone: true,
@@ -25,12 +26,9 @@ const PARENT_ID = new InjectionToken<Signal<string>>('parentId');
 class Parent { }
 
 @Component({
+    selector: 'child',
     template: `
         hey there: {{ name() }}
-        <br />
-        <a [routerLink]="['/parent/alpha/child']">Alpha</a>
-        &nbsp;
-        <a [routerLink]="['/parent/beta/child']">Beta</a>
     `,
     imports: [RouterLink],
     standalone: true,
@@ -39,6 +37,13 @@ class Child {
     readonly name = inject(PARENT_ID);
 }
 
+@Component({
+    selector: 'nope',
+    template: 'not project scoped',
+    standalone: true,
+})
+class NotProjectScoped { }
+
 export const routes: Routes = [{
     path: 'parent/:parentId',
     component: Parent,
@@ -46,6 +51,12 @@ export const routes: Routes = [{
         path: 'child',
         component: Child
     }]
+}, {
+    path: 'nah',
+    component: NotProjectScoped
+}, {
+    path: "**",
+    redirectTo: "nah"
 }];
 
 function assert(condition: any, msg?: string): asserts condition {
