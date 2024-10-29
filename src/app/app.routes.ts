@@ -110,8 +110,7 @@ function objectEntries<T extends object>(obj: T): Entries<T> {
 
 function guaranteedRoute<
     Path extends string,
-    RouteParams extends ExtractRouteParams<Path>
->(path: Path, tokens: Record<RouteParams, InjectionToken<string>>, children: Routes) {
+>(path: Path, tokens: Record<ExtractRouteParams<Path>, InjectionToken<string>>, children: Routes) {
     @Component({
         selector: 'noop',
         template: '<router-outlet />',
@@ -133,16 +132,11 @@ export const routes: Routes = [
     //     {
     //     path: 'parent/:parentId',
     //     component: Parent,
-    //     // providers: [provideRouteStateFoo(PARENT_ID, { param: 'parentId' })],
     //     children: [{
     //         path: 'child',
     //         component: Child
     //     }]
-    // }, 
-    // guaranteedRoute('parent/:parentId', { parentId: PARENT_ID }, [{
-    //     path: 'child',
-    //     component: Child,
-    // }]),
+    // },
     {
         ...guaranteedRoute('parent/:parentId', { parentId: PARENT_ID }, [{
             path: 'child',
