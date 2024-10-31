@@ -2,12 +2,14 @@ import { Component, InjectionToken, Provider, Signal, computed, inject } from "@
 import { toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Route, RouterOutlet } from "@angular/router";
 
-type ExtractRouteParams<T extends string> =
-    T extends `${infer Before}/:${infer Param}/${infer After}`
-    ? Param | ExtractRouteParams<Before> | ExtractRouteParams<After>
-    : T extends `${infer Before}/:${infer Param}`
-    ? Param | ExtractRouteParams<Before>
-    : never;
+type ExtractRouteParams<T extends string, Params = never> =
+    T extends `:${infer MaybeParam}`
+    ? MaybeParam extends `${infer Param}/${infer After}`
+    ? ExtractRouteParams<After, Param | Params>
+    : MaybeParam | Params
+    : T extends `${string}/${infer After}`
+    ? ExtractRouteParams<After, Params>
+    : Params;
 
 function provideRouteStateParam<T>(token: InjectionToken<Signal<T>>, param: string): Provider {
     return {
